@@ -366,3 +366,5 @@ FodyWeavers.xsd
 .sonar/
 .sonarqube/
 .scannerwork/
+
+devlog.md

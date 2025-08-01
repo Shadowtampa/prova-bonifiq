@@ -24,7 +24,7 @@ namespace ProvaPub.Controllers
 		public async Task<Order> PlaceOrder(string paymentMethod, decimal paymentValue, int customerId)
 		{
             var contextOptions = new DbContextOptionsBuilder<TestDbContext>()
-    .UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=Teste;Trusted_Connection=True;")
+    .UseSqlServer(@"Server=localhost,1433;Database=Teste;User Id=sa;Password=Bonifiq123;Encrypt=True;TrustServerCertificate=True;")
     .Options;
 
             using var context = new TestDbContext(contextOptions);
