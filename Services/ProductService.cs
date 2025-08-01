@@ -3,19 +3,15 @@ using ProvaPub.Repository;
 
 namespace ProvaPub.Services
 {
-	public class ProductService
+	public class ProductService : BaseService
 	{
-		TestDbContext _ctx;
-
-		public ProductService(TestDbContext ctx)
+		public ProductService(TestDbContext ctx) : base(ctx)
 		{
-			_ctx = ctx;
 		}
 
-		public ProductList  ListProducts(int page)
+		public RecordList<Product> ListProducts(int page)
 		{
-			return new ProductList() {  HasNext=false, TotalCount =10, Products = _ctx.Products.ToList() };
+			return CreatePaginatedList(_ctx.Products, page);
 		}
-
 	}
 }

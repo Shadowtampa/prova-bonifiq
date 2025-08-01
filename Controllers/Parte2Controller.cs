@@ -8,7 +8,7 @@ namespace ProvaPub.Controllers
 	
 	[ApiController]
 	[Route("[controller]")]
-	public class Parte2Controller :  ControllerBase
+	public class Parte2Controller : ControllerBase
 	{
 		/// <summary>
 		/// Precisamos fazer algumas alterações:
@@ -19,23 +19,32 @@ namespace ProvaPub.Controllers
 		/// 
 		/// </summary>
 		TestDbContext _ctx;
-		public Parte2Controller(TestDbContext ctx)
+
+		ProductService _productService;
+
+		CustomerService _customerService;
+
+		public Parte2Controller(
+			TestDbContext ctx,
+			ProductService productService,
+			CustomerService _customerService)
 		{
 			_ctx = ctx;
+			_productService = productService;
+			_customerService = customerService;
 		}
 	
 		[HttpGet("products")]
-		public ProductList ListProducts(int page)
+		public RecordList<Product> ListProducts(int page = 1)
 		{
-			var productService = new ProductService(_ctx);
-			return productService.ListProducts(page);
+			// Ta, aqui eu posso ter feito um overenginnering, mas eu quero garantir que o user não vai me mandar um 0. 
+			return _productService.ListProducts(Math.Max(1, page));
 		}
 
 		[HttpGet("customers")]
-		public CustomerList ListCustomers(int page)
+		public RecordList<Customer> ListCustomers(int page = 1)
 		{
-			var customerService = new CustomerService(_ctx);
-			return customerService.ListCustomers(page);
+			return _customerService.ListCustomers(Math.Max(1, page));
 		}
 	}
 }
