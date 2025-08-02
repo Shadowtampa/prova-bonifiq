@@ -27,7 +27,7 @@ namespace ProvaPub.Controllers
 		public Parte2Controller(
 			TestDbContext ctx,
 			ProductService productService,
-			CustomerService _customerService)
+			CustomerService customerService)
 		{
 			_ctx = ctx;
 			_productService = productService;

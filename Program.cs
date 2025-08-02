@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using ProvaPub.Repository;
 using ProvaPub.Services;
+using ProvaPub.Services.Payment;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,7 +17,12 @@ builder.Services.AddDbContext<TestDbContext>(options =>
 builder.Services.AddScoped<RandomService>();
 builder.Services.AddScoped<ProductService>();
 builder.Services.AddScoped<CustomerService>();
-builder.Services.AddScoped<OrderService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
+
+// Registrar estratégias de pagamento
+builder.Services.AddScoped<PixPaymentStrategy>();
+builder.Services.AddScoped<CreditCardPaymentStrategy>();
+builder.Services.AddScoped<PayPalPaymentStrategy>();
 
 var app = builder.Build();
 

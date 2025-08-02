@@ -11,14 +11,12 @@ namespace ProvaPub.Services
         TestDbContext _ctx;
 
         Random _random;
-        public RandomService()
+        public RandomService(TestDbContext ctx)
         {
-            var contextOptions = new DbContextOptionsBuilder<TestDbContext>()
-    .UseSqlServer(@"Server=localhost,1433;Database=Teste;User Id=sa;Password=Bonifiq123;Encrypt=True;TrustServerCertificate=True;")
-    .Options;
+
             seed = Guid.NewGuid().GetHashCode();
 
-            _ctx = new TestDbContext(contextOptions);
+            _ctx = ctx;
 
             _random = new Random(seed);
         }
@@ -33,12 +31,9 @@ namespace ProvaPub.Services
             }
             catch (DbUpdateException exception)
             {
-                if (exception.InnerException is SqlException sqlEx && sqlEx.Number == 2601)
-                {
-                    Console.WriteLine("Número duplicado.");
-                    return number;
-                }
-                throw; 
+                Console.WriteLine("Número duplicado.");
+                return number;
+
             }
         }
 
