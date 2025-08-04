@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using ProvaPub.Models;
 using ProvaPub.Services;
 using ProvaPub.Requests;
 using ProvaPub.Models.Payment;
-using ProvaPub.Enums;
 using ProvaPub.DTO;
 
 namespace ProvaPub.Controllers
@@ -36,7 +34,7 @@ namespace ProvaPub.Controllers
         [HttpPost("orders")]
         public async Task<OrderResponseDto> PlaceOrder([FromForm] PlaceOrderRequest request)
         {
-            Models.Payment.PaymentMethod payment = request.PaymentMethod switch
+            PaymentMethod payment = request.PaymentMethod switch
             {
                 Enums.PaymentMethod.Pix => new PixPayment(),
                 Enums.PaymentMethod.CreditCard => new CreditCardPayment(),
