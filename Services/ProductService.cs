@@ -1,5 +1,7 @@
 ﻿using ProvaPub.Models;
 using ProvaPub.Repository;
+using ProvaPub.Interfaces;
+
 
 namespace ProvaPub.Services
 {

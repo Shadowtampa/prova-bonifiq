@@ -7,18 +7,15 @@ namespace ProvaPub.Services
 {
     public class RandomService
     {
-        int seed;
-        TestDbContext _ctx;
+        private readonly int seed;
+        private readonly TestDbContext _ctx;
 
-        Random _random;
-        public RandomService()
+        private readonly Random _random;
+        public RandomService(TestDbContext ctx)
         {
-            var contextOptions = new DbContextOptionsBuilder<TestDbContext>()
-    .UseSqlServer(@"Server=localhost,1433;Database=Teste;User Id=sa;Password=Bonifiq123;Encrypt=True;TrustServerCertificate=True;")
-    .Options;
             seed = Guid.NewGuid().GetHashCode();
 
-            _ctx = new TestDbContext(contextOptions);
+            _ctx = ctx;
 
             _random = new Random(seed);
         }
@@ -27,18 +24,19 @@ namespace ProvaPub.Services
             var number = _random.Next(100);
             try
             {
-                _ctx.Numbers.Add(new RandomNumber() { Number = number });
-                _ctx.SaveChanges();
+                await _ctx.Numbers.AddAsync(new RandomNumber() { Number = number });
+                await _ctx.SaveChangesAsync();
                 return number;
             }
             catch (DbUpdateException exception)
             {
                 if (exception.InnerException is SqlException sqlEx && sqlEx.Number == 2601)
                 {
+                    //Estou colocando console.log padrãozinho, mas poderia ser um sistema de logs mais arquitetado. 
                     Console.WriteLine("Número duplicado.");
                     return number;
                 }
-                throw; 
+                throw;
             }
         }
 
