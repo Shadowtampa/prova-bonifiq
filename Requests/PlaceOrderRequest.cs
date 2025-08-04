@@ -1,8 +1,10 @@
+using ProvaPub.Enums;
+
 namespace ProvaPub.Requests
 {
     public class PlaceOrderRequest
     {
-        public string PaymentMethod { get; set; }
+        public PaymentMethod PaymentMethod { get; set; }
 
         public decimal PaymentValue { get; set; }
         public int CustomerId { get; set; }

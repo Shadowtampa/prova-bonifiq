@@ -1,3 +1,5 @@
+using ProvaPub.Services;
+
 namespace ProvaPub.Models.Payment
 {
     public class CreditCardPayment : PaymentMethod
@@ -26,7 +28,8 @@ namespace ProvaPub.Models.Payment
                 return new Order
                 {
                     Value = amount,
-                    CustomerId = customerId
+                    CustomerId = customerId,
+                    OrderDate = DateTime.UtcNow,
                 };
             }
 

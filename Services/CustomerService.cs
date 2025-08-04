@@ -44,5 +44,9 @@ namespace ProvaPub.Services
             return true;
         }
 
+        public async Task<Customer> Get(int customerId)
+        {
+            return await _ctx.Customers.FirstAsync(c => c.Id == customerId);
+        }
     }
 }

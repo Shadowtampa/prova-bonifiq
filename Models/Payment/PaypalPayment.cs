@@ -16,7 +16,8 @@ namespace ProvaPub.Models.Payment
             var payload = new
             {
                 CustomerId = customerId,
-                Amount = amount
+                Amount = amount,
+                OrderDate = DateTime.UtcNow
             };
 
             var response = await _httpClient.PostAsJsonAsync("https://postman-echo.com/post", payload);

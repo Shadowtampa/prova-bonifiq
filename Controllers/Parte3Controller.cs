@@ -3,6 +3,8 @@ using ProvaPub.Models;
 using ProvaPub.Services;
 using ProvaPub.Requests;
 using ProvaPub.Models.Payment;
+using ProvaPub.Enums;
+using ProvaPub.DTO;
 
 namespace ProvaPub.Controllers
 {
@@ -21,21 +23,24 @@ namespace ProvaPub.Controllers
     public class Parte3Controller : ControllerBase
     {
         private readonly OrderService _orderService;
+        private readonly CustomerService _customerService;
 
-        public Parte3Controller(OrderService orderService)
+
+        public Parte3Controller(OrderService orderService, CustomerService customerService)
         {
+            _customerService = customerService;
             _orderService = orderService;
         }
 
         // Eu acho que deveria ser feito com post. 
         [HttpPost("orders")]
-        public async Task<Order> PlaceOrder([FromForm] PlaceOrderRequest request)
+        public async Task<OrderResponseDto> PlaceOrder([FromForm] PlaceOrderRequest request)
         {
-            PaymentMethod payment = request.PaymentMethod.ToLower() switch
+            Models.Payment.PaymentMethod payment = request.PaymentMethod switch
             {
-                "pix" => new PixPayment(),
-                "credit_card" => new CreditCardPayment(),
-                "paypal" => new PaypalPayment(),
+                Enums.PaymentMethod.Pix => new PixPayment(),
+                Enums.PaymentMethod.CreditCard => new CreditCardPayment(),
+                Enums.PaymentMethod.Paypal => new PaypalPayment(),
                 _ => throw new ArgumentException("Método de pagamento inválido"),
             };
 
@@ -45,7 +50,11 @@ namespace ProvaPub.Controllers
                 request.CustomerId
             );
 
-            return order;
+            var customer = await _customerService.Get(request.CustomerId);
+
+            var response = OrderResponseDto.FromDomain(order, customer);
+
+            return response;
         }
     }
 }
