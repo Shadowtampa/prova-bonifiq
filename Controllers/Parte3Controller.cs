@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using ProvaPub.Models;
-using ProvaPub.Repository;
 using ProvaPub.Services;
+using ProvaPub.Requests;
+using ProvaPub.Models.Payment;
 
 namespace ProvaPub.Controllers
 {
@@ -17,19 +17,35 @@ namespace ProvaPub.Controllers
     /// Demonstre como você faria isso.
     /// </summary>
     [ApiController]
-	[Route("[controller]")]
-	public class Parte3Controller :  ControllerBase
-	{
-		[HttpGet("orders")]
-		public async Task<Order> PlaceOrder(string paymentMethod, decimal paymentValue, int customerId)
-		{
-            var contextOptions = new DbContextOptionsBuilder<TestDbContext>()
-    .UseSqlServer(@"Server=localhost,1433;Database=Teste;User Id=sa;Password=Bonifiq123;Encrypt=True;TrustServerCertificate=True;")
-    .Options;
+    [Route("[controller]")]
+    public class Parte3Controller : ControllerBase
+    {
+        private readonly OrderService _orderService;
 
-            using var context = new TestDbContext(contextOptions);
+        public Parte3Controller(OrderService orderService)
+        {
+            _orderService = orderService;
+        }
 
-            return await new OrderService(context).PayOrder(paymentMethod, paymentValue, customerId);
-		}
-	}
+        // Eu acho que deveria ser feito com post. 
+        [HttpPost("orders")]
+        public async Task<Order> PlaceOrder([FromForm] PlaceOrderRequest request)
+        {
+            PaymentMethod payment = request.PaymentMethod.ToLower() switch
+            {
+                "pix" => new PixPayment(),
+                "credit_card" => new CreditCardPayment(),
+                "paypal" => new PaypalPayment(),
+                _ => throw new ArgumentException("Método de pagamento inválido"),
+            };
+
+            var order = await _orderService.PayOrder(
+                payment,
+                request.PaymentValue,
+                request.CustomerId
+            );
+
+            return order;
+        }
+    }
 }
