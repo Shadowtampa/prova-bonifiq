@@ -1,6 +1,4 @@
 using FluentValidation;
-using Microsoft.EntityFrameworkCore;
-using ProvaPub.Models;
 using ProvaPub.Repository;
 using ProvaPub.Requests;
 
@@ -14,31 +12,39 @@ namespace ProvaPub.Validators
         {
             _dbContext = dbContext;
 
+            // Já tem teste
             RuleFor(request => request.CustomerId)
                 .GreaterThan(0)
                 .WithMessage("O valor do ID deve ser maior que zero.");
 
+            // Já tem teste
             RuleFor(request => request.CustomerId)
                 .Must(CustomerExists)
                 .WithMessage("Cliente com ID {PropertyValue} não existe.");
 
+            // Já tem teste
             RuleFor(request => request.PurchaseValue)
                 .GreaterThan(0)
                 .WithMessage("O valor da compra deve ser maior que zero.");
 
+            // Já tem teste
             RuleFor(request => request.CustomerId)
                 .Must(CostumerCanPurchaseOnlyOnceMonth)
-                .WithMessage("O cliente já realizou uma compra no último mês.");
+                .WithMessage("O cliente já efetuou uma compra este mês.");
 
+            // Já tem teste
             RuleFor(request => request)
                 .Must(CustomerFirstPurchaseMaximum)
                 .WithMessage("A primeira compra de um cliente é de no máximo 100");
 
+            // Já tem teste
             RuleFor(request => request)
                 .Must(PurchasesOnlyBusinessHoursWorkingDays)
                 .WithMessage("As compras só são permitidas durante dias da semana e hora útil");
 
         }
+
+        protected virtual System.DateTime GetNow() => System.DateTime.UtcNow;
 
         private bool CustomerExists(int customerId)
         {
@@ -62,7 +68,8 @@ namespace ProvaPub.Validators
 
         private bool PurchasesOnlyBusinessHoursWorkingDays(CanPurchaseRequest request)
         {
-            return !(DateTime.UtcNow.Hour < 8 || DateTime.UtcNow.Hour > 18 || DateTime.UtcNow.DayOfWeek == DayOfWeek.Saturday || DateTime.UtcNow.DayOfWeek == DayOfWeek.Sunday);
+            var now = GetNow();
+            return !(now.Hour < 8 || now.Hour > 18 || now.DayOfWeek == DayOfWeek.Saturday || now.DayOfWeek == DayOfWeek.Sunday);
         }
     }
 }
