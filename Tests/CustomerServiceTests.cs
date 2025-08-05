@@ -168,7 +168,7 @@ namespace ProvaPub.Tests
 
     }
 
-    public class CustomTimeCanPurchaseRequestValidator : CanPurchaseRequestValidator
+    internal class CustomTimeCanPurchaseRequestValidator : CanPurchaseRequestValidator
     {
         private readonly DateTime _customNow;
 
@@ -178,9 +178,6 @@ namespace ProvaPub.Tests
             _customNow = customNow;
         }
 
-        protected override DateTime GetNow()
-        {
-            return _customNow;
-        }
+        protected override DateTime GetCustomNow() => _customNow;
     }
 }

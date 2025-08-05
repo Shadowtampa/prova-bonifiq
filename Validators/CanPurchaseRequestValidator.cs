@@ -8,6 +8,9 @@ namespace ProvaPub.Validators
     {
         private readonly TestDbContext _dbContext;
 
+        protected virtual DateTime GetCustomNow() => DateTime.UtcNow;
+
+
         public CanPurchaseRequestValidator(TestDbContext dbContext)
         {
             _dbContext = dbContext;
@@ -43,9 +46,6 @@ namespace ProvaPub.Validators
                 .WithMessage("As compras só são permitidas durante dias da semana e hora útil");
 
         }
-
-        protected virtual System.DateTime GetNow() => System.DateTime.UtcNow;
-
         private bool CustomerExists(int customerId)
         {
             return _dbContext.Customers.Any(c => c.Id == customerId);
@@ -68,7 +68,7 @@ namespace ProvaPub.Validators
 
         private bool PurchasesOnlyBusinessHoursWorkingDays(CanPurchaseRequest request)
         {
-            var now = GetNow();
+            var now = GetCustomNow();
             return !(now.Hour < 8 || now.Hour > 18 || now.DayOfWeek == DayOfWeek.Saturday || now.DayOfWeek == DayOfWeek.Sunday);
         }
     }
